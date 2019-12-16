@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{current_user.get_full_name}} {% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-7 order-md-2"  style="max-width: 800px;">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="row">
+							<div class="col">Profile</div>
+							{% if user.is_authenticated %}
+								{% if current_user == user %}
+									{% if not user.profile.facebook %}
+										<a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}" class="btn btn-primary">Connect Facebook</a>
+									{% else %}
+										<a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}" class="col-2 btn btn-primary"><i class="fa fa-facebook"></i></a>
+									{% endif %}
+									<div class="col-1"></div>
+									<a href="{% url 'editProfile' %}" class="col-2 btn btn-dark"> <i class="fa fa-edit"></i> </a>
+								{% else %}
+									{% if current_user.profile.facebook %}
+										<a href="{{ current_user.profile.facebook.link }}?next={{ request.path }}" class="btn btn-primary"><i class="fa fa-facebook"></i></a>
+									{% endif %}
+									<div class="col-1"></div>
+									{% if current_user.profile in user.profile.following.all %}
+										<button id="followUser" class="btn btn-danger"> Unfollow </button>
+									{% else %}
+										<button id="followUser" class="btn btn-success"> Follow </button>
+									{% endif %}
+								{% endif %}
+							{% else %}
+								{% if current_user.profile.facebook %}
+									<a href="{{ current_user.profile.facebook.link }}?next={{ request.path }}" class="btn btn-primary"><i class="fa fa-facebook"></i></a>
+								{% endif %}
+							{% endif %}
+						</h3>
+					</div>
+					<div class = "card-body">
+						<div class = "row">
+							<div class="col-7">
+								<div class="card">
+									<div class="card-header"><h5>{{ current_user.get_full_name }}</h5></div>
+									<div class="card-body">Degree: {{ current_user.profile.degree }} </div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										Hobbies/Interests
+									</div>
+									{% if current_user.interests.all|length != 0 %}
+										<ul class="list-group">
+											{% for i in current_user.interests.all %}
+												<li class="list-group-item"> 
+													{% if i.interest != "" %}
+														{{ i }} 
+													{% else %}
+														N/A
+													{% endif %}
+												</li>
+											{% endfor %}
+										</ul>
+									{% else %}
+										{% if user == current_user %}
+											<a href="{% url 'editProfile' %}" class="btn btn-primary"> Fill out your interests here! </a>
+										{% else %}
+											<ul class="list-group">
+												<li class="list-group-item"> 
+													This user has no interests
+												</li>
+											</ul>
+										{% endif %}
+									{% endif %}
+								</div>
+							</div>
+							<div class="col">
+								<img class="img-fluid" id="profileImage">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="card">
+									<div class="card-header"> Biography </div>
+									<div class="card-body"> 
+										{% if current_user.profile.biography == "" %}
+											There's nothing here...
+										{% else %}
+											{{ current_user.profile.biography }}
+									{% endif %} </div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br>
+			</div>
+			<div class="col-md order-md-1">
+				<div class="card">
+					<div class="card-header">
+						<h5> Following </h5>
+					</div>
+					<ul class="list-group">
+						{% if current_user.profile.following.all|length != 0 %}
+							{% for u in current_user.profile.following.all %}
+								<a href="{% url 'user' id=u.user.id %}" class="list-group-item list-group-item-action">{{ u.user.get_full_name }}</a>
+							{% endfor %}
+						{% else %}
+							<span class="list-group-item"> {% if current_user == user %}You{% else %}They{% endif %} are following no-one </span>
+						{% endif %}
+					</ul>
+				</div>
+				<br>
+				<div class="card">
+					<div class="card-header">
+						<h5> Followers </h5>
+					</div>
+					<ul class="list-group">
+						{% if followers|length != 0 %}
+							{% for u in followers %}
+								<a href="{% url 'user' id=u.user.id %}" class="list-group-item list-group-item-action">{{ u.user.get_full_name }}</a>
+							{% endfor %}
+						{% else %}
+							<span class="list-group-item"> {% if current_user == user %}You{% else %}They{% endif %} have no followers </span>
+						{% endif %}
+					</ul>
+				</div>
+				<br>
+			</div>
+			<div class="col-md order-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h5>
+							Current Courses
+							<a href="{% url 'editCourses' %}" class="badge badge-dark"> <i class="fa fa-edit"></i> </a>
+						</h5>
+					</div>
+					<ul class="list-group">
+						{% if current_user.profile.currentCourses.all|length == 0 %}
+							<div class="list-group-item"> No Current Courses </div>
+							<a href="{% url 'editCourses' %}" class="list-group-item btn btn-outline-primary"> Add some? </a>
+						{% else %}
+							{% for c in current_user.profile.currentCourses.all %}
+								<a href="{% url 'course_info' name=c.name %}" class="list-group-item list-group-item-action">{{ c }}</a>
+							{% endfor %}
+						{% endif %}
+					</ul>
+				</div>
+				<br>
+				<div class="card">
+					<div class="card-header"><h5>Previous Courses</h5></div>
+					<ul class="list-group">
+						{% if current_user.profile.previousCourses.all|length == 0 %}
+							<div class="list-group-item"> No Previous Courses </div>
+						{% else %}
+							{% for c in current_user.profile.previousCourses.all %}
+								<a href="{% url 'course_info' name=c.name %}" class="list-group-item list-group-item-action">{{ c }}</a>
+							{% endfor %}
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		const followButton = document.getElementById("followUser");
+		if (followButton) {
+			followButton.addEventListener("click", function() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						response = JSON.parse(this.responseText);
+						if (response.following) {
+							followButton.textContent = "Unfollow"
+							followButton.classList.add("btn-danger")
+							followButton.classList.remove("btn-primary")
+						} else {
+							followButton.textContent = "Follow"
+							followButton.classList.remove("btn-danger")
+							followButton.classList.add("btn-primary")
+						}
+					}
+				};
+				xhttp.open("GET", "{% url 'follow' id=current_user.id %}", true);
+				xhttp.send();
+			})
+		}
+		const profileImage = document.getElementById('profileImage');
+		profileImage.addEventListener("error",function() {
+			profileImage.src = '{% get_media_prefix %}/default/myprofile.jpg';
+			profileImage.onerror = null;
+		});
+		profileImage.src = "{{ current_user.profile.image.url }}"
+	</script>
+{% endblock %}

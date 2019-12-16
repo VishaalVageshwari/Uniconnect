@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<div class="card">
+					<div class="card-header">
+						<h5> Following </h5>
+					</div>
+					<ul class="list-group">
+						<a href="../users?id=USER_ID" class="list-group-item list-group-item-action">FOLLOWING_NAME</a>
+					</ul>
+				</div>
+				<br>
+				<div class="card">
+					<div class="card-header">
+						<h5> Followers </h5>
+					</div>
+					<ul class="list-group">
+						<a href="../users?id=USER_ID" class="list-group-item list-group-item-action">FOLLOWER_NAME</a>
+					</ul>
+				</div>
+			</div>
+			<div class="col-7">
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<h3 class="col"> Profile </h3>
+							<a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Connect Facebook</a>
+							<div class="col-1"></div>
+							<a href="{% url 'editProfile' %}" class="col-2 btn btn-primary">Edit</a>
+						</div>
+					</div>
+					<div class = "card-body">
+						<div class = "row">
+							<div class="col-7">
+								<div class="card">
+									<div class="card-header"><h5>{{ user.get_full_name }}</h5></div>
+									<div class="card-body">Degree: {{ user.profile.degree }} </div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										Hobbies/Interests
+									</div>
+									{% if user.interests.all|length != 0 %}
+										<ul class="list-group" id="hobbies">
+											{% for i in user.interests.all %}
+												<li class="list-group-item"> 
+													{% if i.interest != "" %}
+														{{ i }} 
+													{% else %}
+														N/A
+													{% endif %}
+												</li>
+											{% endfor %}
+										</ul>
+									{% else %}
+										<a href="{% url 'editProfile' %}" class="btn btn-primary"> Fill out your interests here! </a>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-3">
+								<img src="{{ user.profile.image.url }}" height=200 width=200>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="card">
+									<div class="card-header">Biography</div>
+									<div class="card-body"> {{ user.profile.biography }} </div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<div class="card-header"><h5>Current Courses</h5></div>
+					<ul class="list-group">
+						<a href="../courses?name=COURSE_NAME" class="list-group-item list-group-item-action">CURRENT COURSE</a>
+					</ul>
+				</div>
+				<br>
+				<div class="card">
+					<div class="card-header"><h5>Previous Courses</h5></div>
+					<ul class="list-group">
+						<li class="list-group-item">No Previous Courses</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+{{ crispy }}
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends  'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Signup {% endblock %}
+
+{% block content %}
+<div>
+    <form class="card" method="POST">
+        {% csrf_token %}
+        <div class="card-header">
+            <h3>Sign-Up</h3>
+        </div>
+        <div class="card-body">
+            <small style="color: grey">Enter First Name</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">First Name</span>
+                </div>
+                {{ form.first_name }}
+            </div>
+            <small style="color: grey">Enter Last Name</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Last Name</span>
+                </div>
+                {{ form.last_name }}
+            </div>
+            <small style="color: grey">Enter valid Email</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Email</span>
+                </div>
+                {{ form.email }}
+            </div>
+            <small style="color: grey">Enter Username</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                </div>
+                {{ form.username }}
+            </div>
+            <small style="color: grey">Enter Password</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-key"></i></span>
+                </div>
+                {{ form.password1 }}
+            </div>
+            <small style="color: grey">Confirm Password</small>
+            <br>
+            <div class="input-group form-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-check"></i></span>
+                </div>
+                {{ form.password2 }}
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="input-group form-group">
+                <input class="form-control" type="submit" value="Sign-Up">
+            </div>
+            <a href="{% url 'login' %}">Already a user? Login here!</a>
+        </div>
+    </form>
+    <br>
+    {% for field in form %}
+    {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+{{ crispy }}
+{% endblock %}

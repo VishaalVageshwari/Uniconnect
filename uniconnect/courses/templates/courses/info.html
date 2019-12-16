@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} {{ course }} {% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="card col-6" style="min-width:400px">
+			<div class="card-header">
+				<div class="row">
+					<h3 class="col"><a href="https://www.handbook.unsw.edu.au/undergraduate/courses/2019/{{ course }}">{{ course }}</a></h3>
+					<h5 class="col">Average Rating: {{ course.avg_rating }}</h5>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<h5 class="col-5"> Course Name </h5>
+					<div class="col-6"> {{ course.title }} </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Units of Credit: </h5>
+					<div class="col-6"> {{ course.uoc }} UOC </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Offering Terms </h5>
+					<div class="col-6"> {{ course.offeringTerms }} </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Prerequisites </h5>
+					<div class="col-6"> {{ course.prerequisites|safe }} </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Description: </h5>
+					<div class="col-12"> {{ course.description|safe }} </div>
+				</div>
+			</div>
+		</div>
+		<div class="col-6" style="min-width:400px">
+			{% if user.is_authenticated %}
+				<div class="card row">
+					<h6 class="card-header">
+						Add Review for {{course}}
+					</h6>
+					<form method="POST">
+						{% csrf_token %}
+						<div class="input-group card-body">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<div class="input-group-text">Enter Feedback</div>
+								</div>
+								{{ form.feedback }}
+							</div>
+							<div class="input-group form-group">
+								<div class="input-group-prepend">
+									<div class="input-group-text">Rating</div>
+								</div>
+								{{ form.rating }}
+							</div>
+
+							<div class="col-3">
+								<div class="row">
+									<button class="btn btn-success col" type="submit" name="normal">Submit</button>
+								</div>
+								<div class="row">
+									<button class="btn btn-primary col" type="submit" name="anon">Submit Anonymously</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<br>
+			{% endif %}
+
+			<div class="card row">
+				<div class="card-header">
+					<h6>Student's Reviews</h6>
+				</div>
+				<div class="list-group">
+					<div class="card list-group-item">
+						{% if course.reviews.all|length == 0 %}
+							There are no reviews for this course yet. Be the first to create one!
+						{% else %}
+							{% for r in course.reviews.all %}
+								<div class="card-header row">
+									{% if r.anonymous %}
+										<h6 class="col list-group">Anonymous</h6>
+									{% else %}
+										<h6 class="col list-group"><a href="{% url 'user' id=r.user.id%}">{{r.user.get_full_name}}</a></h6>
+									{% endif %}
+									<div class="col float-right"> {{r.rating}}/5 </div>
+								</div>
+								<div class="card-body">
+									{{r.feedback}}
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{{ crispy }}
+{% endblock %}

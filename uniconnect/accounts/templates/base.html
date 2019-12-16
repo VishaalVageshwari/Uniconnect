@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> UniConnect | {% block title %}{% endblock %} </title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	{% load static %}
+	<link href="{% static "css/style.css" %}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/ico" href="{% static 'favicon.ico'%}">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		{% if user.is_authenticated %}
+			<a href="{% url 'dashboard' %}" class="navbar-brand"> UniConnect </a>
+		{% else %}
+			<a href="{% url 'login' %}" class="navbar-brand"> UniConnect </a>
+		{% endif %}		
+		<ul class="navbar-nav mr-auto">
+			{% if user.is_authenticated %}
+				<li class="nav-item">
+					{% url 'dashboard' as dashboard %}
+					<a class="nav-link {% if request.get_full_path == dashboard %} active {% endif %}" href="{{ dashboard }}"> Dashboard </a>
+				</li>
+			{% endif %}
+			<li class="nav-item">
+				{% url 'user_search' as user_search %}
+				<a class="nav-link {% if request.get_full_path == user_search %} active {% endif %}" href="{{ user_search }}"> Search Students </a>
+			</li>
+			<li class="nav-item">
+				{% url 'course_search' as course_search %}
+				<a class="nav-link {% if request.get_full_path == course_search %} active {% endif %}" href="{{ course_search }}"> Search Courses </a>
+			</li>
+		</ul>
+		{% if user.is_authenticated %}
+			<a class="nav-link btn btn-danger" href="{% url 'logout' %}">Logout</a>
+		{% else %}
+			<a class="nav-link btn btn-success" href="{% url 'login' %}">Login</a>
+			&nbsp;&nbsp;
+			<a class="nav-link btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+		{% endif %}
+	</nav>
+	<div class="d-flex justify-content-center h-100">
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+</html>
+	

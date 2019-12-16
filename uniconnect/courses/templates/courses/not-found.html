@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %} Course Not Found {% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="card col-6">
+			<div class="card-header">
+				<div class="row">
+					<h3 class="col">Course does not exist</h3>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<h5 class="col-5"> Course Name </h5>
+					<div class="col-6"> N/A </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Units of Credit: N/A </h5>
+					<div class="col-6">  </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Offering Terms </h5>
+					<div class="col-6"> N/A </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Prerequisites </h5>
+					<div class="col-6"> N/A </div>
+				</div>
+				<div class="row">
+					<h5 class="col-5"> Description: </h5>
+					<div class="col-12"> N/A </div>
+				</div>
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="card row">
+				<h6 class="card-header">
+					Add Review
+				</h6>
+				<div class="input-group card-body">
+					<div> 
+						<span class="fa fa-star"></span>
+						<span class="fa fa-star"></span>
+						<span class="fa fa-star"></span>
+						<span class="fa fa-star"></span>
+						<span class="fa fa-star"></span>
+					</div>
+					<textarea class="form-control"></textarea>
+					<div class="col-3">
+						<div class="row">
+							<button class="btn btn-success col" disabled='disabled'>Submit</button>
+						</div>
+						<div class="row">
+							<button class="btn btn-primary col" disabled='disabled'>Submit Anonymously</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="card row">
+				<div class="card-header">
+					<h6>Student's Reviews</h6>
+				</div>
+				<div class="card-body">
+					No reviews yet
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

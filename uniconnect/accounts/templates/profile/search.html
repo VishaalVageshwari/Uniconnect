@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% block title %} Search Students {% endblock %}
+
+{% block content %}
+	<form class="card mx-auto col" method="GET" style="max-width: 600px;">
+		<div class="card-body">
+			<div class="row">
+				<div class="col">
+					<div class="form-group input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Name</div>
+						</div>
+						<input type="text" class="text" name="name" placeholder="" value = "{{ name }}">
+					</div>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Interest</div>
+						</div>
+						<input type="text" class="text" name="interest" placeholder="" value = "{{ interest }}">
+					</div>
+				</div>
+				{% if user.is_authenticated %}
+					<div class="col-5 row">
+						<div class="form-check">
+							<input type="checkbox" class="text form-check-input" name="tutor" {% if tutor %} checked="checked" {% endif %}>
+							<div class="input-group-prepend">
+								<div class="form-check-label">Willing to Tutor?</div>
+							</div>
+						</div>
+						<div class="form-check">
+							<input type="checkbox" class="text form-check-input" name="sameCourses" {% if sameCourses %} checked="checked" {% endif %}>
+							<div class="input-group-prepend">
+								<div class="form-check-label">Same Course</div>
+							</div>
+						</div>
+						{% if user.profile.facebook %}
+							<div class="form-check">
+								<input type="checkbox" class="text form-check-input" name="facebookFriends" {% if facebookFriends %} checked="checked" {% endif %}>
+								<div class="input-group-prepend">
+									<div class="form-check-label">Facebook Friends</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		<div class="card-footer">
+			<input class="btn btn-success" type="submit" value="Search">
+			{% url 'user_search' as user_search %}
+			{% if users|length > 0 %}
+				<div class="list-group mx-auto card-body col">
+					{% for u in users %}
+					<a href="{% url 'user' id=u.id %}" class="list-group-item list-group-item-action">
+						{{ u.get_full_name }} 
+						{% if user.is_authenticated %}
+							<span class="badge badge-dark float-right" data-toggle="tooltip" data-placement="right" title="User has {% if u.mutualInterests|length == 0 %}no{% else %}{{ u.mutualInterests|length|apnumber }}{% endif %} mutual interest{% if  u.mutualInterests|length != 1 %}s{% endif %}"> {{u.mutualInterests|length}} </span>
+							<span class="badge badge-primary float-right" data-toggle="tooltip" data-placement="right" title="User has {% if u.mutualCourses|length == 0 %}no{% else %}{{ u.mutualCourses|length|apnumber }}{% endif %} mutual course{% if  u.mutualCourses|length != 1 %}s{% endif %}"> {{u.mutualCourses|length}} </span>
+						{% endif %}
+					</a>
+				{% endfor %}
+			{% elif request.get_full_path != user_search %}
+				<span class="list-group-item"> No results found </span>
+			{% endif %}
+			</div>
+		</div>
+	</form>
+{% endblock %}

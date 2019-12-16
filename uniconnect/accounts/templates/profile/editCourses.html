@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Edit Courses {% endblock %}
+
+{% block content %}
+	<div class="card col" style="max-width:900px">
+		{% csrf_token %}
+		{{ form.user_id }}
+		<div class="card-header">
+			<h4> Edit Courses </h4>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col card">
+					<div class="card-header">
+						<h5> Current Courses </h5>
+					</div>
+					<div class="card-body">
+						<form class="row">
+							{% csrf_token %}
+							<div class="input-group">
+								<input type="text" class="text" name="addCourse" placeholder="e.g. SENG2021">
+								<div class="input-group-append">
+									<input class="btn btn-success" type="submit" value="Add Course">
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-body">
+						<div class="list-group row">
+							{% for c in user.profile.currentCourses.all %}
+								<form class="list-group-item">
+									{% csrf_token %}
+									<input type="hidden" value="{{ c }}" name="finishCourse">
+									<a href="{% url 'course_info' name=c.name %}"> {{ c }} </a>
+									<button type="submit" class="float-right btn btn-primary"><i class="fa fa-arrow-right"></i></button>
+								</form>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+				<form class="col card">
+					{% csrf_token %}
+					<div class="card-header">
+						<h5>
+							Previous Courses 
+							<button class="btn btn-success float-right" type="submit" name="saveTutors" value="save"> Save </button>
+						</h5>
+					</div>
+					<div class="card-body list-group">
+						{% for t in tutorships %}
+							<div class="list-group-item">
+								<a href="{% url 'course_info' name=t.course.name %}"> {{ t.course.name }} </a>
+								<div class="float-right">
+									<label for="prev{{ t.course.name }}"> Willing to Tutor? </label>
+									<input type="checkbox" {% if t.tutor %} checked="checked" {% endif %} name="{{ t.course.name }}" id="prev{{ t.course.name }}">
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
