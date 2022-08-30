@@ -12,7 +12,7 @@ future==0.17.1
 idna==2.8
 isodate==0.6.0
 lxml==4.3.3
-mod-wsgi==4.6.5
+mod-wsgi==4.9.3
 mysql-connector-python==8.0.15
 mysqlclient==1.4.2.post1
 oauthlib==3.0.1
